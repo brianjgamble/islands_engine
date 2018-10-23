@@ -62,7 +62,6 @@ defmodule IslandsEngine.IslandTest do
 
   test "guess/2 returns a tuple for a correct guess" do
     {:ok, new_coordinate} = Coordinate.new(1, 2)
-
     {:hit, island} = Island.guess(dot_island(), new_coordinate)
     assert MapSet.member?(island.hit_coordinates, new_coordinate)
   end
@@ -70,5 +69,17 @@ defmodule IslandsEngine.IslandTest do
   test "guess/2 return :miss for an incorrect guess" do
     {:ok, new_coordinate} = Coordinate.new(2, 2)
     assert :miss == Island.guess(dot_island(), new_coordinate)
+  end
+
+  test "forested?/1 returns true if an island is forested" do
+    {:ok, new_coordinate} = Coordinate.new(1, 2)
+    {:hit, island} = Island.guess(dot_island(), new_coordinate)
+    assert Island.forested?(island)
+  end
+
+  test "forested?/1 returns false if an island is partially forested" do
+    {:ok, new_coordinate} = Coordinate.new(1, 1)
+    {:hit, island} = Island.guess(square_island(), new_coordinate)
+    refute Island.forested?(island)
   end
 end

@@ -52,4 +52,8 @@ defmodule IslandsEngine.Island do
         :miss
     end
   end
+
+  def forested?(island) do
+    MapSet.equal?(island.coordinates, island.hit_coordinates)
+  end
 end
