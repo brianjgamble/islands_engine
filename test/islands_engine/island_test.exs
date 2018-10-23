@@ -45,16 +45,16 @@ defmodule IslandsEngine.IslandTest do
   end
 
   test "overlaps?/2 returns true when islands overlap" do
-    square = square_island
-    dot    = dot_island
+    square = square_island()
+    dot    = dot_island()
 
     assert Island.overlaps?(square, dot)
   end
 
   test "overlaps?/2 returns false when islands don't overlap" do
-    square  = square_island
-    dot     = dot_island
-    l_shape = l_shape_island
+    square  = square_island()
+    dot     = dot_island()
+    l_shape = l_shape_island()
 
     refute Island.overlaps?(square, l_shape)
     refute Island.overlaps?(dot, l_shape)

@@ -20,8 +20,8 @@ defmodule IslandsEngine.GuessesTest do
       |> Guesses.add(:hit, coordinate2)
 
     assert Enum.count(guesses.hits) == 2
-    assert MapSet.equal?(MapSet.new([coordinate1, coordinate2]),
-                         guesses.hits)
+    assert MapSet.member?(guesses.hits, coordinate1)
+    assert MapSet.member?(guesses.hits, coordinate2)
   end
 
   test "add/3 allows misses to be tracked" do
@@ -31,6 +31,6 @@ defmodule IslandsEngine.GuessesTest do
     guesses = Guesses.add(guesses, :miss, coordinate)
 
     assert Enum.count(guesses.misses) == 1
-    assert MapSet.equal?(MapSet.new([coordinate]), guesses.misses)
+    assert MapSet.member?(guesses.misses, coordinate)
   end
 end
