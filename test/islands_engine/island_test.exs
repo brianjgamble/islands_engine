@@ -59,4 +59,16 @@ defmodule IslandsEngine.IslandTest do
     refute Island.overlaps?(square, l_shape)
     refute Island.overlaps?(dot, l_shape)
   end
+
+  test "guess/2 returns a tuple for a correct guess" do
+    {:ok, new_coordinate} = Coordinate.new(1, 2)
+
+    {:hit, island} = Island.guess(dot_island(), new_coordinate)
+    assert MapSet.member?(island.hit_coordinates, new_coordinate)
+  end
+
+  test "guess/2 return :miss for an incorrect guess" do
+    {:ok, new_coordinate} = Coordinate.new(2, 2)
+    assert :miss == Island.guess(dot_island(), new_coordinate)
+  end
 end
