@@ -23,4 +23,20 @@ defmodule IslandsEngine.RulesTest do
 
     assert result == :error
   end
+
+  test "check/2 allows a player to position islands when not set" do
+    rules = Rules.new()
+    rules = %{rules | state: :players_set}
+
+    {:ok, rules} = Rules.check(rules, {:position_islands, :player1})
+    assert rules.state == :players_set
+  end
+
+  test "check/2 does not allow the positioning of islands when set" do
+    rules = Rules.new()
+    rules = %{rules | state: :players_set, player1: :islands_set}
+
+    assert Rules.check(rules, {:position_islands, :player1}) ==
+      :error
+  end
 end
