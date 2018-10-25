@@ -39,4 +39,14 @@ defmodule IslandsEngine.RulesTest do
     assert Rules.check(rules, {:position_islands, :player1}) ==
       :error
   end
+
+  test "check/2 when islands are set it's player1 turn" do
+    rules = Rules.new()
+    rules = %{rules | state: :players_set}
+
+    {:ok, rules} = Rules.check(rules, {:set_islands, :player1})
+    {:ok, rules} = Rules.check(rules, {:set_islands, :player2})
+
+    assert rules.state == :player1_turn
+  end
 end
