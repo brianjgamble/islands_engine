@@ -16,7 +16,7 @@ defmodule IslandsEngine.RulesTest do
     assert rules.state == :players_set
   end
 
-  test "check/2 return an error with the wrong action" do
+  test "check/2 returns an error with the wrong action" do
     result =
       Rules.new()
       |> Rules.check(:completely_wrong_action)
@@ -32,7 +32,7 @@ defmodule IslandsEngine.RulesTest do
     assert rules.state == :players_set
   end
 
-  test "check/2 does not allow the positioning of islands when set" do
+  test "check/2 prevents the positioning of islands when set" do
     rules = Rules.new()
     rules = %{rules | state: :players_set, player1: :islands_set}
 
@@ -40,7 +40,7 @@ defmodule IslandsEngine.RulesTest do
       :error
   end
 
-  test "check/2 when islands are set it's player1 turn" do
+  test "check/2 set turn to player1 when islands are set" do
     rules = Rules.new()
     rules = %{rules | state: :players_set}
 
@@ -48,5 +48,45 @@ defmodule IslandsEngine.RulesTest do
     {:ok, rules} = Rules.check(rules, {:set_islands, :player2})
 
     assert rules.state == :player1_turn
+  end
+
+  test "check/2 allows player1 to guess a coordinate" do
+    rules = Rules.new()
+    rules = %{rules | state: :player1_turn}
+
+    {:ok, rules} = Rules.check(rules, {:guess_coordinate, :player1})
+    assert rules.state == :player2_turn
+  end
+
+  test "check/2 prevents a player guess out of turn" do
+    rules = Rules.new()
+    rules = %{rules | state: :player1_turn}
+
+    assert Rules.check(rules, {:guess_coordinate, :player2}) ==
+      :error
+  end
+
+  test "check/2 sets game over when a player1 wins" do
+    rules = Rules.new()
+    rules = %{rules | state: :player1_turn}
+
+    {:ok, rules} = Rules.check(rules, {:win_check, :win})
+    assert rules.state == :game_over
+  end
+
+  test "check/2 allows player2 to guess a coordinate" do
+    rules = Rules.new()
+    rules = %{rules | state: :player2_turn}
+
+    {:ok, rules} = Rules.check(rules, {:guess_coordinate, :player2})
+    assert rules.state == :player1_turn
+  end
+
+  test "check/2 sets game over when a player2 wins" do
+    rules = Rules.new()
+    rules = %{rules | state: :player2_turn}
+
+    {:ok, rules} = Rules.check(rules, {:win_check, :win})
+    assert rules.state == :game_over
   end
 end
