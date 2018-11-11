@@ -3,14 +3,14 @@ defmodule IslandsEngine.BoardTest do
 
   alias IslandsEngine.{Board, Coordinate, Island}
 
-  def square_island do
-    {:ok, square_coordinate} = Coordinate.new(1, 1)
+  def square_island(row, col) do
+    {:ok, square_coordinate} = Coordinate.new(row, col)
     {:ok, square} = Island.new(:square, square_coordinate)
     square
   end
 
-  def dot_island do
-    {:ok, dot_coordinate} = Coordinate.new(7, 1)
+  def dot_island(row, col) do
+    {:ok, dot_coordinate} = Coordinate.new(row, col)
     {:ok, dot} = Island.new(:dot, dot_coordinate)
     dot
   end
@@ -23,7 +23,7 @@ defmodule IslandsEngine.BoardTest do
   test "position_island/3 allows an island to be placed on the board" do
     board =
       Board.new
-      |> Board.position_island(:square, square_island())
+      |> Board.position_island(:square, square_island(1, 1))
 
     placed_island = board.square
     {:ok, first_coordinate} = Coordinate.new(1, 1)
@@ -34,7 +34,7 @@ defmodule IslandsEngine.BoardTest do
   test "position_island/3 prevents islands from overlapping" do
     board =
       Board.new
-      |> Board.position_island(:square, square_island())
+      |> Board.position_island(:square, square_island(1, 1))
 
     {:ok, coordinate} = Coordinate.new(2, 1)
     {:ok, overlapping_dot} = Island.new(:dot, coordinate)
@@ -46,7 +46,7 @@ defmodule IslandsEngine.BoardTest do
   test "guess/2 handles a miss" do
     board =
       Board.new
-      |> Board.position_island(:dot, dot_island())
+      |> Board.position_island(:dot, dot_island(7, 1))
 
     {:ok, guess_coordinate} = Coordinate.new(2, 1)
     {result, _, _, _} = Board.guess(board, guess_coordinate)
@@ -57,7 +57,7 @@ defmodule IslandsEngine.BoardTest do
   test "guess/2 handles a hit" do
     board =
       Board.new
-      |> Board.position_island(:dot, dot_island())
+      |> Board.position_island(:dot, dot_island(7, 1))
 
     {:ok, guess_coordinate} = Coordinate.new(7, 1)
     {result, type, _, _} = Board.guess(board, guess_coordinate)
@@ -67,12 +67,12 @@ defmodule IslandsEngine.BoardTest do
   end
 
   test "guess/2 handles a win" do
-    square = square_island()
+    square = square_island(1, 1)
     square_with_all_hits = %{square | hit_coordinates: square.coordinates}
 
     board =
       Board.new
-      |> Board.position_island(:dot, dot_island())
+      |> Board.position_island(:dot, dot_island(7, 1))
       |> Board.position_island(:square, square_with_all_hits)
 
     {:ok, win_coordinate} = Coordinate.new(7, 1)
